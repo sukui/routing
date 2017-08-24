@@ -63,11 +63,19 @@ class Router
             return false;
         }
 
-        $this->route = $this->handleUri($requestUri);
-        $request->setRoute($this->route);
+
+        if($this->routerRule instanceof ZanRouter){
+            $this->route = $this->handleUri($requestUri);
+            $request->setRoute($this->route);
+            $route = $this->parseRoute($request);
+        }else{
+            $route = $this->parseRoute($request);
+            $this->route = $route['controller_name'].$this->separator.$route['action_name'];
+            $request->setRoute($this->route);
+        }
+
         $request->setRequestFormat($this->format);
         $this->setParameters($request, $this->parameters);
-        $route = $this->parseRoute($request);
         $this->clear();
         return $route;
     }
